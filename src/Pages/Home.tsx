@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 
 
 function Home() {
-   const containerVariants = {
+  const containerVariants = {
     hidden: {},
     show: {
       transition: {
@@ -19,8 +19,8 @@ function Home() {
     show: { opacity: 1, y: 0, transition: { duration: 1, ease: "easeOut" } },
   };
 
-    const navigate = useNavigate();
-      const controls = useAnimation();
+  const navigate = useNavigate();
+  const controls = useAnimation();
 
   // Trigger animation on mount and when scrolled into view
   useEffect(() => {
@@ -53,7 +53,7 @@ function Home() {
   }, [controls]);
   return (
     <>
-     
+
       <div className="relative w-full h-screen overflow-hidden">
         <motion.video
           className="absolute top-0 left-0 w-full h-full object-cover z-0"
@@ -67,46 +67,44 @@ function Home() {
           transition={{ duration: 10, ease: "easeInOut", repeat: Infinity, repeatType: "reverse" }}
         />
         <motion.div
-          className="relative z-10 flex flex-col items-start justify-center h-full text-white ml-20 space-y-4"
+          className="relative z-10 flex flex-col items-center justify-center h-full text-white ml-20 space-y-4"
           variants={containerVariants}
           initial="hidden"
           animate="show"
-          transition={{delay:1}}
+          transition={{ delay: 1 }}
         >
-          <motion.p className="header-text-small m-0" variants={itemVariants}>
-            Welcome to Agrovision – Harnessing AI to Predict, Protect, and Prosper in Farming!
-          </motion.p>
-
           <motion.h1 className="header-text m-0" variants={itemVariants}>
             Agrovision
           </motion.h1>
-
+          <motion.p className="header-text-small m-0" variants={itemVariants}>
+            Welcome to Agrovision – Harnessing AI to Predict, Protect, and Prosper in Farming!
+          </motion.p>
           <motion.p className="header-text-small m-0" variants={itemVariants}>
             Detect Early, Protect Fully, Harvest More!
           </motion.p>
 
-         <motion.button
-      className="header-button"
-      variants={itemVariants}
-      animate={{
-        scale: [1, 1.1, 1],
-      }}
-      transition={{
-        duration: 1.5,
-        repeat: Infinity,
-        ease: "easeInOut",
-      }}
-      onClick={() => navigate("/user-input")} // your new page route
-    >
-      Start
-    </motion.button>
+          <motion.button
+            className="header-button"
+            variants={itemVariants}
+            animate={{
+              scale: [1, 1.1, 1],
+            }}
+            transition={{
+              duration: 1.5,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            onClick={() => navigate("/user-input")} // your new page route
+          >
+            Start
+          </motion.button>
         </motion.div>
       </div>
 
 
 
 
- <footer className="bg-gray-900 text-gray-300 py-6">
+      <footer className="bg-gray-900 text-gray-300 py-6">
         <div className="container mx-auto flex flex-col md:flex-row items-center justify-between px-6">
           {/* Developer credit */}
           <div className="text-center md:text-left w-full md:w-auto mb-4 md:mb-0">
