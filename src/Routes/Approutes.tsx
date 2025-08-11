@@ -2,9 +2,9 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Ava from "../Pages/AVA"
 import Header from "../Pages/Home"
 import InfoSection from "../Pages/Info"
-import Navbar from "../Pages/components/Navbar"
+import Navbar from "../components/Navbar"
 import UserInputPage from "../Pages/UserInput"
-import Chatbot from "../Pages/chatbot";
+import Chatbot from "../Pages/Chatbot";
 
 const links = () => {
   return (

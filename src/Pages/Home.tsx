@@ -2,8 +2,8 @@ import backgroundVideo from '../assets/videos/main.mp4';
 import { motion, useAnimation } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import '../index.css'
-import { useEffect } from 'react';
-
+import { useEffect, useState } from 'react';
+import logo from "../assets/images/logo.png";
 
 function Home() {
   const containerVariants = {
@@ -21,7 +21,13 @@ function Home() {
 
   const navigate = useNavigate();
   const controls = useAnimation();
-
+  const [loading, setLoading] = useState(false);
+  const handleStartClick = () => {
+    setLoading(true);
+    setTimeout(() => {
+      navigate("/user-input");
+    }, 2000);
+  };
   // Trigger animation on mount and when scrolled into view
   useEffect(() => {
     const handleScroll = () => {
@@ -73,18 +79,29 @@ function Home() {
           animate="show"
           transition={{ delay: 1 }}
         >
-          <motion.h1 className="header-text m-0" variants={itemVariants}>
+          <motion.h1 className="text-[80px] mb-5 header-text" variants={itemVariants}>
             Agrovision
           </motion.h1>
-          <motion.p className="header-text-small m-0" variants={itemVariants}>
+          <motion.p className="text-3xl mb-5" variants={itemVariants}>
             Welcome to Agrovision – Harnessing AI to Predict, Protect, and Prosper in Farming!
           </motion.p>
-          <motion.p className="header-text-small m-0" variants={itemVariants}>
+          <motion.p className="mb-5 text-3xl" variants={itemVariants}>
             Detect Early, Protect Fully, Harvest More!
           </motion.p>
 
           <motion.button
-            className="header-button"
+            className="
+              mt-8
+              text-[30px]
+              bg-[#254336]
+              py-2.5 px-2.5
+              rounded-xl  
+              cursor-pointer
+              w-[200px]
+              h-[70px]
+              sm:w-[200px] sm:h-[50px] sm:text-[20px]
+              xs:w-[160px] xs:h-[50px] xs:text-[18px]
+            "
             variants={itemVariants}
             animate={{
               scale: [1, 1.1, 1],
@@ -94,16 +111,30 @@ function Home() {
               repeat: Infinity,
               ease: "easeInOut",
             }}
-            onClick={() => navigate("/user-input")} // your new page route
+            onClick={handleStartClick}
+            disabled={loading}
           >
             Start
           </motion.button>
         </motion.div>
+
+        {loading && (
+          <motion.div
+            className="fixed inset-0 bg-green-600 flex items-center justify-center z-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.img
+              src={logo}
+              alt="Logo"
+              className="w-60 h-60"
+              animate={{ rotate: 360 }}
+              transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
+            />
+          </motion.div>
+        )}
       </div>
-
-
-
-
       <footer className="bg-gray-900 text-gray-300 py-6">
         <div className="container mx-auto flex flex-col md:flex-row items-center justify-between px-6">
           {/* Developer credit */}

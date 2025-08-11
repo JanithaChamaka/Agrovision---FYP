@@ -31,7 +31,6 @@ const UserInputPage = () => {
     setChartData(data.predictions); // example: [{name:"Nitrogen",value:40}, {name:"Phosphorus",value:60}]
     setStep(2);
   };
-
   // Step 2: Send email with chart data
   const handleSendReport = async () => {
     await fetch('/api/send-report', {

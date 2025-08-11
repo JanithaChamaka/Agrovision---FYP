@@ -1,6 +1,6 @@
 import { Link, NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
-import logo from "../../assets/images/logo.png";
+import logo from "../assets/images/logo.png";
 import { useState } from "react";
 
 const Navbar = () => {
