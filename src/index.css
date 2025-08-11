@@ -1,0 +1,136 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+html{
+  margin: 0;
+  padding: 0;
+  scroll-behavior: smooth;
+}
+.logo-img{
+  width: 120px;
+  height: 120px;
+  margin-top: 10px;
+  margin-left: 5px;
+}
+body::-webkit-scrollbar {
+  display: none;
+}
+.primary-ff{
+  font-family: "Outfit", sans-serif;
+  color: white;
+}
+
+.header-text{
+  font-family: "Outfit", sans-serif;
+  font-size: 150px;
+  color: #254336;
+  margin-left: 30px;
+  font-weight: 900;
+  margin-top: -30px;
+}
+.header-text-small{
+  font-family: "Outfit", sans-serif;
+  font-size: 30px;
+  margin-left: 30px;
+  margin-top: -10px;
+}
+.header-button{
+  font-family: "Outfit", sans-serif;
+  margin-top: 30px;
+  font-size: 30px;
+  background-color: #254336;
+  margin-left: 30px;
+  padding: 10px 10px 10px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 250px;
+  height: 70px;
+}
+
+.pattern-background {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.3) 2px, transparent 2px);
+  background-size: 40px 40px;
+  opacity: 0.3;
+  pointer-events: none; /* so it doesn't interfere with clicks */
+}
+
+.info-text-md{
+  font-size: 40px;
+  font-family: "Outfit", sans-serif;
+   color: #254336;
+}
+
+.info-text-small{
+  font-size: 20px;
+  font-family: "Outfit", sans-serif;
+  color: #254336;
+}
+.ava-text{
+  font-family: "Outfit", sans-serif;
+  font-size: 100px;
+  color: #254336;
+  margin-left: 30px;
+  font-weight: 900;
+  margin-top: -200px;
+}
+.ava-text-small{
+  font-family: "Outfit", sans-serif;
+  font-size: 30px;
+  margin-left: 30px;
+  margin-top: -10px;
+}
+.ava-button{
+  font-family: "Outfit", sans-serif;
+  margin-top: 30px;
+  font-size: 30px;
+  background-color: #254336;
+  margin-left: 30px;
+  padding: 10px 10px 10px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 250px;
+  height: 70px;
+}
+
+.info-header {
+  font-family: "Outfit", sans-serif;
+  font-size: 100px;
+  text-align: left;
+  color: white;
+   font-weight: 900;
+}
+
+.info-text-small {
+    font-family: "Outfit", sans-serif;
+  font-size: 30px;
+  text-align: left;
+  color: black;
+}
+
+.transparent-card {
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.photo-gallery img {
+  transition: transform 0.3s ease;
+}
+
+.photo-gallery img:hover {
+  transform: scale(1.05);
+}
+
+.info-header-small{
+  font-family: "Outfit", sans-serif;
+  font-size: 30px;
+  text-align: left;
+  color: #254336;
+}
+.line-text{
+    font-family: "Outfit", sans-serif;
+  font-size: 30px;
+}
