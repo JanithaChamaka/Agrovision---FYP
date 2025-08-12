@@ -114,7 +114,7 @@ function Home() {
             onClick={handleStartClick}
             disabled={loading}
           >
-            Start
+            Get Start
           </motion.button>
         </motion.div>
 

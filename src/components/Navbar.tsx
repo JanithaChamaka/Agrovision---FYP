@@ -7,9 +7,9 @@ const Navbar = () => {
   const [language, setLanguage] = useState("Language");
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const handleLanguageChange = (lang: string) => {
-    setLanguage(lang);
-  };
+  // const handleLanguageChange = (lang: string) => {
+  //   setLanguage(lang);
+  // };
 
   return (
     <motion.nav
