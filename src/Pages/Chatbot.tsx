@@ -30,7 +30,7 @@ const Chatbot = () => {
     try {
       const url = "https://api.perplexity.ai/chat/completions";
       const headers = {
-        Authorization: `Bearer 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`,
+        Authorization: `Bearer ${import.meta.env.VITE_CHATBOT_API_KEY}`,
         "Content-Type": "application/json"
       };
 
