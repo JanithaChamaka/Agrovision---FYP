@@ -1,69 +1,180 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
+import backgroundimage from "../assets/images/Ava1.jpg"; // ✅ import your background
+import { Bot, User } from "lucide-react"; // ✅ nice icons for avatars
 
 interface Message {
-  sender: 'user' | 'bot';
+  sender: "user" | "bot";
   text: string;
 }
 
 const Chatbot = () => {
   const [messages, setMessages] = useState<Message[]>([
-    { sender: 'bot', text: 'Hello! How can I assist you today?' },
+    {
+      sender: "bot",
+      text: "Hello! I am AVA 🌱. How can I help with Sri Lankan agriculture today?"
+    }
   ]);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     const trimmed = input.trim();
     if (!trimmed) return;
 
-    setMessages((prev) => [...prev, { sender: 'user', text: trimmed }]);
-    setInput('');
+    setMessages((prev) => [...prev, { sender: "user", text: trimmed }]);
+    setInput("");
 
-    setTimeout(() => {
+    const botIndex = messages.length + 1;
+    setMessages((prev) => [...prev, { sender: "bot", text: "" }]);
+
+    try {
+      const url = "https://api.perplexity.ai/chat/completions";
+      const headers = {
+        Authorization: `Bearer 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`,
+        "Content-Type": "application/json"
+      };
+
+      const payload = {
+        model: "sonar-pro",
+        messages: [
+          {
+            role: "system",
+            content:
+              "You are AVA, the Agrovision Virtual Agent. You provide helpful, accurate, and friendly answers about Sri Lankan agriculture, crops, fertilizers, diseases, government schemes, and market prices."
+          },
+          { role: "user", content: trimmed }
+        ],
+        search_domain_filter: ["doa.gov.lk"],
+        stream: true
+      };
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(payload)
+      });
+
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+
+      let fullText = "";
+
+      if (reader) {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          const chunk = decoder.decode(value, { stream: true });
+          const lines = chunk.split("\n").filter((line) => line.trim() !== "");
+
+          for (const line of lines) {
+            if (line.startsWith("data:")) {
+              const jsonStr = line.replace(/^data:\s*/, "");
+              if (jsonStr === "[DONE]") break;
+
+              try {
+                const parsed = JSON.parse(jsonStr);
+                const delta = parsed?.choices?.[0]?.delta?.content || "";
+                if (delta) {
+                  fullText += delta;
+                  setMessages((prev) => {
+                    const updated = [...prev];
+                    updated[botIndex] = { sender: "bot", text: fullText };
+                    return updated;
+                  });
+                }
+              } catch (err) {
+                console.error("Stream parse error", err);
+              }
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error calling Perplexity API:", error);
       setMessages((prev) => [
         ...prev,
-        { sender: 'bot', text: 'This is a mock response.' },
+        {
+          sender: "bot",
+          text: "Oops! Something went wrong. Please try again."
+        }
       ]);
-    }, 1000);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') sendMessage();
+    if (e.key === "Enter") sendMessage();
   };
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
-      <div className="w-[70%] h-[70%] bg-white rounded-2xl shadow-lg flex flex-col overflow-hidden border border-gray-300">
+    <div
+      className="flex items-center justify-center h-screen relative"
+      style={{
+        backgroundImage: `url(${backgroundimage})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat"
+      }}
+    >
+      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-black/50"></div>
+
+      {/* Chat container with glass effect */}
+      <div
+        className="relative w-[70%] h-[70%] rounded-2xl flex flex-col overflow-hidden z-10
+                   backdrop-blur-xl bg-[rgba(17,25,40,0.75)] border border-white/20 shadow-lg"
+      >
         {/* Header */}
-        <div className="p-4 bg-[#254336] text-white text-2xl font-semibold">
-          Agrovision Chatbot
+        <div className="p-4 bg-[#254336]/90 text-white text-2xl font-semibold">
+          AVA - Agrovision Virtual Agent
         </div>
 
-        {/* Chat messages */}
+        {/* Messages */}
         <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
           {messages.map((msg, i) => (
             <div
               key={i}
-              className={`max-w-lg px-5 py-3 rounded-2xl text-base whitespace-pre-line ${
-                msg.sender === 'user'
-                  ? 'bg-blue-500 text-white self-end ml-auto'
-                  : 'bg-gray-200 text-gray-800 self-start mr-auto'
+              className={`flex items-start gap-3 ${
+                msg.sender === "user" ? "justify-end" : "justify-start"
               }`}
             >
-              {msg.text}
+              {/* Avatar */}
+              {msg.sender === "bot" && (
+                <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#254336] text-white">
+                  <Bot size={20} />
+                </div>
+              )}
+
+              {/* Message bubble */}
+              <div
+                className={`max-w-lg px-5 py-3 rounded-2xl text-base whitespace-pre-line shadow-md ${
+                  msg.sender === "user"
+                    ? "bg-[#254336] text-white"
+                    : "bg-white/80 text-gray-900"
+                }`}
+              >
+                {msg.text}
+              </div>
+
+              {msg.sender === "user" && (
+                <div className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-300 text-gray-800">
+                  <User size={20} />
+                </div>
+              )}
             </div>
           ))}
           <div ref={bottomRef} />
         </div>
 
-        <div className="p-4 border-t flex items-center gap-2 bg-white">
+        {/* Input */}
+        <div className="p-4 border-t border-white/20 flex items-center gap-2 bg-transparent">
           <input
             type="text"
-            className="flex-1 border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="flex-1 border border-white/30 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#254336] bg-white/20 text-white placeholder-gray-300"
             placeholder="Type your message..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
@@ -71,7 +182,7 @@ const Chatbot = () => {
           />
           <button
             onClick={sendMessage}
-            className="bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition"
+            className="bg-[#254336] text-white px-6 py-2 rounded-full hover:bg-[#1a2a20] transition"
           >
             Send
           </button>
