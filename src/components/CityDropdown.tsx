@@ -13,7 +13,7 @@ export default function CityDropdown({ city, setCity }: CityDropdownProps) {
     <div className="relative w-full">
       {/* Dropdown button */}
       <div
-        className="border rounded px-3 py-2 cursor-pointer bg-white relative"
+        className="border h-15 rounded px-3 py-2 cursor-pointer bg-white relative"
         onClick={() => setOpen(!open)}
       >
         {city || "Select a city"}

@@ -67,7 +67,16 @@ const Navbar = () => {
               AVA
             </NavLink>
           </li>
-
+  <li>
+            <NavLink
+              to="/login"
+              className={({ isActive }) =>
+                isActive ? "text-yellow-500 hover:text-yellow-600" : "text-white hover:text-gray-400"
+              }
+            >
+              Login
+            </NavLink>
+          </li>
           {/* Language Dropdown */}
           <li className="relative cursor-pointer text-white">
             <div

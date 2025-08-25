@@ -102,19 +102,10 @@ function Home() {
               sm:w-[200px] sm:h-[50px] sm:text-[20px]
               xs:w-[160px] xs:h-[50px] xs:text-[18px]
             "
-            variants={itemVariants}
-            animate={{
-              scale: [1, 1.1, 1],
-            }}
-            transition={{
-              duration: 1.5,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
             onClick={handleStartClick}
             disabled={loading}
           >
-            Get Start
+            Get Started
           </motion.button>
         </motion.div>
 

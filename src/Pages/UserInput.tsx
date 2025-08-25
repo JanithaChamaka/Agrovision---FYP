@@ -1,192 +1,253 @@
-import { useEffect, useState } from "react";
-import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import fetchPredictions from "../services/fetchpredictions";
-import type { PredictionResult } from "../types/PredictionResult.types";
 import CityDropdown from "../components/CityDropdown";
+import fetchPredictions from "../services/fetchpredictions";
 import { getWeatherAverages } from "../services/fetchweatherData";
+import type { PredictionResult } from "../types/PredictionResult.types";
 import type { WeatherDisplay } from "../types/WeatherDisplay.types";
 
-const COLORS = ["#0088FE", "#FF8042", "#00C49F", "#FFBB28"];
-
-type PredictionData = {
-  name: string;
-  value: number;
-}[];
-
 const UserInputPage = () => {
+  const [view, setView] = useState<"idle" | "rainfall" | "prediction">("idle");
   const [city, setCity] = useState("");
   const [fertilizer, setFertilizer] = useState("");
-  const [chartData, setChartData] = useState<PredictionData | null>(null);
-  const [email, setEmail] = useState("");
-  const [step, setStep] = useState(1);
-  const [statusMessage, setStatusMessage] = useState<string | null>(null);
-  const [prediction, setPrediction] = useState<PredictionResult | null>(null);
-  const month = new Date()
-    .toLocaleString("default", { month: "long" })
-    .slice(0, 3);
   const [weatherData, setWeatherData] = useState<WeatherDisplay | null>(null);
+  const [loadingWeather, setLoadingWeather] = useState(false);
+  const [weatherError, setWeatherError] = useState<string | null>(null);
+  const [prediction, setPrediction] = useState<PredictionResult | null>(null);
+  const [predicting, setPredicting] = useState(false);
+  const [predictError, setPredictError] = useState<string | null>(null);
 
-  // Step 1: Get prediction and show chart
-  const handlePredict = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      setStatusMessage("Fetching weather data...");
-      const rawWeatherData = await getWeatherAverages(city);
+  const monthShort = useMemo(
+    () => new Date().toLocaleString("default", { month: "long" }).slice(0, 3),
+    []
+  );
 
-      const weatherData: WeatherDisplay | null = rawWeatherData
-        ? {
-            avg_rainfall: Number(rawWeatherData.avg_rainfall),
-            avg_humidity: Number(rawWeatherData.avg_humidity),
-            avg_temperature: Number(rawWeatherData.avg_temperature),
-          }
-        : null;
+  // Load weather data when city changes
+  useEffect(() => {
+    if (!city) {
+      setWeatherData(null);
+      setView("idle");
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      try {
+        setLoadingWeather(true);
+        setWeatherError(null);
+        const raw = await getWeatherAverages(city);
+        if (cancelled) return;
 
-      setWeatherData(weatherData);
+        const parsed: WeatherDisplay | null = raw
+          ? {
+              avg_rainfall: Number(raw.avg_rainfall),
+              avg_humidity: Number(raw.avg_humidity),
+              avg_temperature: Number(raw.avg_temperature),
+            }
+          : null;
 
-      if (!weatherData) {
-        setStatusMessage(null);
-        return;
+        if (!parsed) {
+          setWeatherError("Weather data unavailable for the selected city.");
+          setWeatherData(null);
+          setView("idle");
+        } else {
+          setWeatherData(parsed);
+          setView("rainfall");
+        }
+      } catch (err) {
+        console.error(err);
+        setWeatherError("Failed to load weather data. Please try again.");
+        setWeatherData(null);
+        setView("idle");
+      } finally {
+        setLoadingWeather(false);
       }
+    })();
 
-      setStatusMessage("Fetching prediction...");
-      const data = await fetchPredictions({
+    return () => {
+      cancelled = true;
+    };
+  }, [city]);
+
+  // Predict disease risk
+  const onPredict = async () => {
+    if (!city || !weatherData) return;
+    if (!fertilizer) {
+      setPredictError("Please enter fertilizer usage (kg) before predicting.");
+      return;
+    }
+    try {
+      setPredictError(null);
+      setPredicting(true);
+      const result = await fetchPredictions({
         town: city,
-        month: month,
+        month: monthShort,
         avg_rainfall: weatherData.avg_rainfall,
         avg_humidity: weatherData.avg_humidity,
         avg_temperature: weatherData.avg_temperature,
         fertilizer_usage: parseFloat(fertilizer),
       });
-      setPrediction(data);
-      setStatusMessage(null);
-    } catch (e) {
-      console.error("Error sending report:", e);
-      setStatusMessage("Something went wrong. Please try again.");
+      setPrediction(result);
+      setView("prediction");
+    } catch (err) {
+      console.error(err);
+      setPredictError("Could not fetch prediction. Please try again.");
+      setPrediction(null);
+    } finally {
+      setPredicting(false);
     }
   };
 
-  // Step 2: Send email with chart data
-  const handleSendReport = async () => {
-    await fetch("/api/send-report", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, city, fertilizer, chartData }),
-    });
-    alert("Report sent!");
+  const onBack = () => {
+    setView("rainfall");
+    setPredictError(null);
   };
 
   return (
-    <div
-      className="flex justify-center mt-40"
-      style={{ width: "100vw", height: "80vh" }}
-    >
-      <div className="bg-gray-50 p-6 rounded-lg shadow-lg w-[70vw] h-[75vh] flex flex-col items-center gap-6">
-        {/* Step 1: City + Fertilizer Form */}
-        {step === 1 && (
-          <>
-            <form
-              onSubmit={handlePredict}
-              className="flex flex-col gap-4 w-full max-w-md"
-            >
-              <CityDropdown
-                city={city}
-                setCity={(value) => {
-                  setCity(value);
-                  setStatusMessage("Click Predict to get a new prediction");
-                }}
-              />
-              <input
-                value={fertilizer}
-                onChange={(e) => {
-                  setFertilizer(e.target.value);
-                  setStatusMessage("Click Predict to get a new prediction");
-                }}
-                placeholder="Fertilizer Usage (kg)"
-                type="number"
-                className="border rounded px-3 py-2"
-                required
-              />
-              <button
-                type="submit"
-                className="bg-green-600 text-white py-2 rounded hover:bg-green-700"
-              >
-                Predict
-              </button>
-            </form>
-            {/*output display*/}
-            <div className="w-[500px] h-[500px] border border-black flex justify-center items-center rounded-lg">
-              {statusMessage ? (
-                <p>{statusMessage}</p>
-              ) : prediction ? (
-                <div className="text-center">
-                  <h2 className="text-xl font-bold mb-4">Prediction Result</h2>
-                  <p>City: {city}</p>
-                  <p>Month: {month}</p>
-                  <p>Average temperature: {weatherData?.avg_temperature} °C</p>
-                  <p>Average humidity: {weatherData?.avg_humidity} %</p>
-                  <p>Average rainfall: {weatherData?.avg_rainfall} mm</p>
-                  <p>Fertilizer Usage: {fertilizer} kg</p>
-                  <div className="mt-3 text-xl flex flex-col">
-                    <p>Predicted Disease Percentage</p>
-                    <p> {prediction.disease_percentage} %</p>
-                  </div>
-                </div>
-              ) : (
-                <p>No prediction available.</p>
-              )}
-            </div>
-          </>
+    <div className="min-h-screen w-full bg-gradient-to-br from-green-100 via-blue-50 to-emerald-100 p-4 md:p-8 flex flex-col items-center">
+      {/* Title */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="w-full text-center mt-12"
+      >
+        <h1 className="text-6xl md:text-7xl font-extrabold text-emerald-800">🌱 Agrovision</h1>
+        <p className="text-2xl md:text-3xl text-emerald-700 mt-4">
+          Harnessing AI to Predict, Protect, and Prosper in Farming!
+        </p>
+      </motion.div>
+
+      {/* Input Form Card */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        className="mt-12 w-full max-w-md bg-white shadow-2xl rounded-3xl p-10 flex flex-col items-center gap-6"
+      >
+        <CityDropdown
+          city={city}
+          setCity={(value) => {
+            setCity(value);
+            setFertilizer("");
+            setPrediction(null);
+            setPredictError(null);
+          }}
+        />
+        <input
+          value={fertilizer}
+          onChange={(e) => setFertilizer(e.target.value)}
+          placeholder="Fertilizer (kg)"
+          type="number"
+          min={0}
+          className="w-full text-xl px-5 py-4 border rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-emerald-400"
+        />
+        <button
+          disabled={!city || !weatherData || predicting}
+          onClick={onPredict}
+          className={`w-full text-xl px-6 py-4 rounded-lg shadow-lg font-semibold transition ${
+            !city || !weatherData || predicting
+              ? "bg-emerald-300 text-white cursor-not-allowed"
+              : "bg-emerald-600 hover:bg-emerald-700 text-white"
+          }`}
+        >
+          {predicting ? "Predicting..." : "Predict Disease Risk"}
+        </button>
+
+        {predictError && (
+          <div className="mt-2 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-amber-700 text-center w-full">
+            {predictError}
+          </div>
         )}
+      </motion.div>
 
-        {/* Step 2: Show Pie Chart + Email Input */}
-        {step === 2 && chartData && (
+      {/* Loading */}
+      {loadingWeather && (
+        <div className="rounded-2xl bg-white shadow-2xl p-10 text-center text-emerald-700 mt-12">
+          Loading weather & dashboards…
+        </div>
+      )}
+
+      {/* Prediction View */}
+      {view === "prediction" && prediction && weatherData && (
+        <motion.div
+          key="prediction"
+          initial={{ opacity: 0, rotateY: -90 }}
+          animate={{ opacity: 1, rotateY: 0 }}
+          transition={{ duration: 0.8, type: "spring", stiffness: 120 }}
+          className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-12 w-full max-w-7xl"
+        >
+          {/* Disease Risk Card */}
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            className="flex flex-col items-center gap-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="rounded-2xl bg-white shadow p-8"
           >
-            <PieChart width={400} height={300}>
-              <Pie
-                data={chartData}
-                cx="50%"
-                cy="50%"
-                outerRadius={100}
-                fill="#8884d8"
-                dataKey="value"
-                label
-              >
-                {chartData.map((_, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={COLORS[index % COLORS.length]}
-                  />
-                ))}
-              </Pie>
-              <Tooltip />
-              <Legend />
-            </PieChart>
+            <p className="text-sm text-gray-500">Predicted Disease Risk</p>
+            <h2 className="text-5xl font-extrabold text-rose-600 mt-4">{prediction.disease_percentage}%</h2>
+            <p className="text-sm text-gray-600 mt-2">
+              Based on <span className="font-semibold">{city}</span>, {monthShort} weather & fertilizer.
+            </p>
+            <button
+              onClick={onBack}
+              className="mt-6 px-5 py-3 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-800 shadow transition"
+            >
+              ← Back to Weather
+            </button>
+          </motion.div>
 
-            <div className="flex gap-2">
-              <input
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
-                type="email"
-                className="border rounded px-3 py-2"
-                required
-              />
-              <button
-                onClick={handleSendReport}
-                className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
-              >
-                Send Report
-              </button>
+          {/* Top Risks Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="rounded-2xl bg-white shadow p-8"
+          >
+            <h2 className="text-2xl font-bold text-emerald-800 mb-6">🌾 Top Risks</h2>
+            <div className="space-y-5">
+              {prediction.top_risks.map((risk: any, i: number) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, rotateY: -90 }}
+                  animate={{ opacity: 1, rotateY: 0 }}
+                  transition={{ duration: 0.6, delay: i * 0.15 }}
+                  className="rounded-xl border border-gray-200 shadow-sm p-6 bg-gradient-to-br from-white to-emerald-50"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-lg font-semibold text-gray-800">{risk.name}</h3>
+                    <span
+                      className={`px-3 py-1 text-sm rounded-full font-medium ${
+                        risk.risk_score > 75
+                          ? "bg-rose-100 text-rose-700"
+                          : risk.risk_score > 40
+                          ? "bg-amber-100 text-amber-700"
+                          : "bg-emerald-100 text-emerald-700"
+                      }`}
+                    >
+                      {risk.risk_score}
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-600 mb-2">
+                    <span className="font-medium text-gray-700">Why: </span>
+                    {risk.why}
+                  </p>
+                  <p className="text-sm text-gray-600 mb-2">
+                    <span className="font-medium text-gray-700">Actions: </span>
+                    {risk.actions}
+                  </p>
+                </motion.div>
+              ))}
             </div>
           </motion.div>
-        )}
-      </div>
+        </motion.div>
+      )}
+
+      {/* Idle state */}
+      {view === "idle" && !loadingWeather && (
+        <div className="rounded-2xl bg-white shadow-2xl p-10 text-center text-emerald-700 mt-12">
+          Select a city to view the weather dashboards.
+        </div>
+      )}
     </div>
   );
 };

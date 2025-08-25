@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
     "@lottiefiles/dotlottie-react": "^0.14.4",
     "@react-three/drei": "^10.0.8",
     "@react-three/fiber": "^9.1.2",
@@ -17,12 +18,16 @@
     "axios": "^1.11.0",
     "framer-motion": "^12.12.1",
     "lucide-react": "^0.540.0",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-globe.gl": "^2.35.0",
     "react-router-dom": "^7.6.0",
+    "react-simple": "^1.2.3",
+    "react-simple-maps": "^3.0.0",
     "recharts": "^3.1.2",
     "tailwindcss": "^4.1.7",
-    "three": "^0.176.0"
+    "three": "^0.176.0",
+    "zustand": "^5.0.8"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",

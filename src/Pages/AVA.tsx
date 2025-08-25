@@ -20,14 +20,13 @@ const Ava = () => {
   };
 
   const [rotation, setRotation] = useState({ x: 0, y: 0 });
+  const navigate = useNavigate();
 
   const handleMouseMove = (e: { clientY: number; clientX: number }) => {
-    const x = (e.clientY / window.innerHeight - 0.5) * 30; // up/down tilt
-    const y = (e.clientX / window.innerWidth - 0.5) * 30;  // left/right tilt
+    const x = (e.clientY / window.innerHeight - 0.5) * 30;
+    const y = (e.clientX / window.innerWidth - 0.5) * 30;
     setRotation({ x, y });
   };
-
-  const navigate = useNavigate();
 
   return (
     <div
@@ -39,44 +38,43 @@ const Ava = () => {
         backgroundRepeat: "no-repeat",
       }}
     >
-      {/* Fullscreen overlay  bg-black/50 */}
-      <div className="absolute inset-0 z-0"></div>
+      {/* Large AVA background text */}
+      <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none">
+        <motion.h1
+          className="text-[400px] font-extrabold text-white opacity-20 select-none"
+          style={{
+            textShadow: '2px 2px 15px rgba(0,0,0,0.5)',
+          }}
+          animate={{ scale: [1, 1.05, 1] }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          AVA
+        </motion.h1>
+      </div>
 
-      {/* Content Section */}
+      {/* Main Content Section */}
       <motion.div
-        className="relative z-10 flex flex-col items-start justify-center h-full text-white ml-20 space-y-4"
+        className="relative z-10 flex flex-col items-center justify-center h-full text-white ml-20 space-y-4"
         variants={containerVariants}
         initial="hidden"
         animate="show"
         transition={{ delay: 0 }}
       >
-        <motion.h1
-          className="font-bold text-8xl primary-color-green -mt-30"
-          variants={itemVariants}
-        >
-          Meet AVA — Your Agrovion Virtual Agent
+        <motion.h1 className="font-bold text-6xl primary-color-green -mt-30" variants={itemVariants}>
+        AgroVision Virtual Agent
         </motion.h1>
 
         <motion.p className="text-3xl m-0 mr-20" variants={itemVariants}>
-          AVA (Agrovion Virtual Agent) is your intelligent, always-available
+          AVA (AgroVision Virtual Agent) is your intelligent, always-available
           digital assistant designed to empower farmers, agribusinesses, and
           stakeholders with instant support and smart insights. Whether it's
           answering questions, providing crop recommendations, tracking weather
-          conditions, or guiding you through Agrovion’s tools, AVA is here to
+          conditions, or guiding you through AgroVision’s tools, AVA is here to
           make agriculture smarter and simpler.
         </motion.p>
 
         <motion.button
-          className="mt-8
-            text-[30px]
-            bg-[#254336]
-            py-2.5 px-2.5
-            rounded-xl  
-            cursor-pointer
-            w-[200px]
-            h-[70px]
-            sm:w-[200px] sm:h-[50px] sm:text-[20px]
-            xs:w-[160px] xs:h-[50px] xs:text-[18px]"
+          className="mt-8 text-[30px] bg-[#254336] py-2.5 px-2.5 rounded-xl cursor-pointer w-[200px] h-[70px] sm:w-[200px] sm:h-[50px] sm:text-[20px] xs:w-[160px] xs:h-[50px] xs:text-[18px]"
           variants={itemVariants}
           animate={{ scale: [1, 1.1, 1] }}
           transition={{

@@ -5,7 +5,7 @@ import InfoSection from "../Pages/Info"
 import Navbar from "../components/Navbar"
 import UserInputPage from "../Pages/UserInput"
 import Chatbot from "../Pages/Chatbot";
-
+import Auth from "../Pages/Auth";
 const links = () => {
   return (
    <Router>         
@@ -16,6 +16,7 @@ const links = () => {
          <Route path="/user-input" element={<UserInputPage />} />
          <Route path="/chatbot" element={<Chatbot/>} />
          <Route path="/info" element={<InfoSection/>} />
+         <Route path="/login" element={<Auth/>} />
       </Routes>
     </Router>
   )
