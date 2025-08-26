@@ -13,7 +13,7 @@ export default function CityDropdown({ city, setCity }: CityDropdownProps) {
     <div className="relative w-full">
       {/* Dropdown button */}
       <div
-        className="border h-15 rounded px-3 py-2 cursor-pointer bg-white relative"
+        className="border text-[15px] items-center h-15 rounded px-3 py-3 cursor-pointer bg-white relative"
         onClick={() => setOpen(!open)}
       >
         {city || "Select a city"}
@@ -30,7 +30,7 @@ export default function CityDropdown({ city, setCity }: CityDropdownProps) {
           {VALID_TOWNS.map((town) => (
             <div
               key={town}
-              className={`px-3 py-2 hover:bg-green-100 cursor-pointer ${
+              className={`px-3 py-2 text-[15px] hover:bg-green-100 cursor-pointer ${
                 city === town ? "bg-green-200" : ""
               }`}
               onClick={() => {

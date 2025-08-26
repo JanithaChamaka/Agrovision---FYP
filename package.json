@@ -24,6 +24,7 @@
     "react-router-dom": "^7.6.0",
     "react-simple": "^1.2.3",
     "react-simple-maps": "^3.0.0",
+    "react-toastify": "^11.0.5",
     "recharts": "^3.1.2",
     "tailwindcss": "^4.1.7",
     "three": "^0.176.0",
