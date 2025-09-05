@@ -13,15 +13,14 @@ export default function CityDropdown({ city, setCity }: CityDropdownProps) {
     <div className="relative w-full">
       {/* Dropdown button */}
       <div
-        className="border text-[15px] items-center h-15 rounded px-3 py-3 cursor-pointer bg-white relative"
+        className={`flex border border-black text-xl ${
+          city ? "text-black" : "text-black"
+        } items-center h-15 rounded-lg px-3 py-3 cursor-pointer bg-white relative`}
         onClick={() => setOpen(!open)}
       >
         {city || "Select a city"}
-        <div>
-            <span className="absolute right-3 top-2">
-              {open ? "▲" : "▼"}
-            </span>
-        </div>
+        <div className="flex-1" />
+        <span className="">{open ? "▲" : "▼"}</span>
       </div>
 
       {/* Dropdown menu */}

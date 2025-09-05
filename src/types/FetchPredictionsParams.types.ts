@@ -6,3 +6,4 @@ export type FetchPredictionsParams = {
   avg_temperature: number;
   fertilizer_usage: number;
 };
+

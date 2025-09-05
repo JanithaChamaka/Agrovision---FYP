@@ -1,13 +1,31 @@
 import '.././index.css';
 import { motion } from 'framer-motion';
-import bgimage from '../assets/images/background.png';
+import bgimage from '../assets/images/kandy.jpg';
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 
 const howItWorksData = [
-  { id: 1, title: "Data Collection", content: "Agrovision gathers local weather data and crop health info." },
-  { id: 2, title: "AI-Powered Predictions", content: "Machine learning predicts disease risks & interventions." },
-  { id: 3, title: "Real-Time Alerts", content: "Farmers get notifications on potential threats immediately." },
-  { id: 4, title: "Actionable Insights", content: "Clear recommendations for fertilizer, irrigation & preventive measures." }
+  { 
+    id: 1, 
+    title: "AI Predictions", 
+    content: "Agrovision leverages AI models to analyze local weather, soil, and fertilizer usage. Get accurate disease risk predictions to protect crops and maximize yield." 
+  },
+  { 
+    id: 2, 
+    title: "AVA Chat Bot", 
+    content: "Ask AVA, your AI assistant, for instant guidance on crop management, fertilizer use, and preventive measures anytime." 
+  },
+  { 
+    id: 3, 
+    title: "Download Prediction Report", 
+    content: "Generate a detailed PDF report with disease predictions, top risks, and recommended actions. Keep it for records or share with your team." 
+  },
+  { 
+    id: 4, 
+    title: "Email Results", 
+    content: "Receive AI prediction results directly in your inbox for easy sharing with agronomists, farm managers, or colleagues." 
+  }
 ];
 
 const benefitsData = [
@@ -20,6 +38,7 @@ const benefitsData = [
 // Flip card component
 const FlipCard = ({ title, content }: { title: string; content: string }) => {
   const [flipped, setFlipped] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <motion.div
@@ -28,9 +47,7 @@ const FlipCard = ({ title, content }: { title: string; content: string }) => {
     >
       <motion.div
         className="absolute w-full h-full rounded-xl shadow-lg"
-        style={{
-          transformStyle: "preserve-3d",
-        }}
+        style={{ transformStyle: "preserve-3d" }}
         animate={{ rotateY: flipped ? 180 : 0 }}
         transition={{ duration: 0.8 }}
       >
@@ -56,12 +73,17 @@ const FlipCard = ({ title, content }: { title: string; content: string }) => {
 
 const InfoSection = () => {
   const [scrollY, setScrollY] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const handleGetStarted = () => {
+    navigate('/'); // navigate to home page
+  };
 
   return (
     <div className="relative w-full overflow-hidden">
@@ -91,7 +113,7 @@ const InfoSection = () => {
 
       {/* How It Works Section */}
       <section className="relative py-24 bg-gray-100 overflow-hidden">
-        <h2 className="text-4xl font-bold text-center mb-16">How It Works</h2>
+        <h2 className="text-4xl font-bold text-center mb-16">Key Features</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-8">
           {howItWorksData.map(item => (
             <FlipCard key={item.id} title={item.title} content={item.content} />
@@ -115,7 +137,7 @@ const InfoSection = () => {
         <p className="max-w-3xl mx-auto mb-8">
           Protect your crops, secure your harvest, and grow with confidence using AI-powered insights and actionable recommendations.
         </p>
-        <button className="px-8 py-4 bg-yellow-400 rounded-xl font-bold text-green-900 hover:bg-yellow-500 transition">
+        <button className="px-8 py-4 bg-yellow-400 rounded-xl font-bold text-green-900 hover:bg-yellow-500 transition"   onClick={handleGetStarted}>
           Get Started
         </button>
       </section>

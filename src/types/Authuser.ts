@@ -1,10 +1,6 @@
 export interface User {
     _id: string;
+    name: string;
     email: string;
-}
-
-export interface SignupUser {
-    email: string;
-    password: string;
 }
 
