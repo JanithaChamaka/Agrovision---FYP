@@ -1,130 +1,137 @@
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import backgroundimage from "../assets/images/avabg.jpg";
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useTransition, lazy, Suspense } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const Ava = () => {
-  const [rotation, setRotation] = useState({ x: 0, y: 0 });
-  const [leaving, setLeaving] = useState(false); // page exit
+// Lazy load the Lottie animation
+const LottieAnimation = lazy(() =>
+  import('@lottiefiles/dotlottie-react').then((module) => ({
+    default: module.DotLottieReact,
+  }))
+);
+
+// Define types for props and state
+interface Rotation {
+  x: number;
+  y: number;
+}
+
+// Animation variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: 'easeOut' },
+  },
+};
+
+const Ava: React.FC = () => {
+  const [rotation, setRotation] = useState<Rotation>({ x: 0, y: 0 });
+  const [isPending, startTransition] = useTransition();
   const navigate = useNavigate();
 
-  const containerVariants = {
-    hidden: {},
-    show: {
-      transition: {
-        staggerChildren: 0.3,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 40 },
-    show: { opacity: 1, y: 0, transition: { duration: 1, ease: "easeOut" } },
-  };
-
-  const handleMouseMove = (e: { clientY: number; clientX: number }) => {
-    const x = (e.clientY / window.innerHeight - 0.5) * 30;
-    const y = (e.clientX / window.innerWidth - 0.5) * 30;
+  // Handle mouse movement for 3D rotation effect
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const x = (e.clientY / window.innerHeight - 0.5) * 20;
+    const y = (e.clientX / window.innerWidth - 0.5) * 20;
     setRotation({ x, y });
   };
 
+  // Handle navigation with transition
   const handleStartClick = () => {
-    setLeaving(true); // trigger exit animation
-    setTimeout(() => {
-      navigate("/chatbot");
-    }, 500); // match duration
+    startTransition(() => {
+      navigate('/chatbot');
+    });
   };
 
   return (
-    <AnimatePresence>
-      {!leaving && (
+    <AnimatePresence mode="wait">
+      <motion.div
+        className="relative w-full h-screen overflow-hidden bg-gradient-to-br from-green-800 to-teal-600"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0, scale: 0.98 }}
+        transition={{ duration: 0.4 }}
+      >
+        {/* Main Content Section */}
         <motion.div
-          className="relative w-full h-screen overflow-hidden "
-          style={{
-            backgroundImage: `url(${backgroundimage})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-            
-          }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0, scale: 0.95 }}
-          transition={{ duration: 0.5 }}
+          className="relative z-10 flex flex-col items-start justify-center h-full text-white px-4 sm:px-6 lg:pl-20 space-y-6"
+          variants={containerVariants}
+          initial="hidden"
+          animate="show"
         >
-          {/* Main Content Section */}
-          <motion.div
-            className="relative z-10 flex flex-col items-center justify-center h-full text-black ml-20 space-y-4 -mt-20"
-            variants={containerVariants}
-            initial="hidden"
-            animate="show"
-            transition={{ delay: 0 }}
+          <motion.h1
+            className="relative text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight"
+            variants={itemVariants}
           >
-            <motion.h1
-              className="text-[40px] mb-5 header-text"
-              variants={itemVariants}
-            >
-              Agrovision Virtual Agent
-            </motion.h1>
+            Agrovision Virtual Agent
+          </motion.h1>
 
-            <motion.p className="text-2xl m-0 mr-20 text-bold" variants={itemVariants}>
-              AVA (AgroVision Virtual Agent) is your intelligent, always-available
-              digital assistant designed to empower farmers, agribusinesses, and
-              stakeholders with instant support and smart insights. Whether it's
-              answering questions, providing crop recommendations, tracking weather
-              conditions, or guiding you through AgroVision’s tools, AVA is here to
-              make agriculture smarter and simpler.
-            </motion.p>
+          <motion.p
+            className="text-lg sm:text-xl lg:text-2xl max-w-5xl text-center lg:text-left"
+            variants={itemVariants}
+          >
+            AVA is your intelligent digital assistant, empowering farmers and
+            agribusinesses with real-time support, crop insights, weather tracking,
+            and seamless integration with AgroVision’s tools.
+          </motion.p>
 
-            <motion.button
-              className="mt-8 text-[30px] bg-[#254336] text-white py-2.5 px-2.5 rounded-xl cursor-pointer w-[150px] h-[50px] sm:w-[150px] sm:h-[50px] sm:text-[20px] xs:w-[150px] xs:h-[50px] xs:text-[18px]"
-              variants={itemVariants}
-              onClick={handleStartClick}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Start
-            </motion.button>
-          </motion.div>
+          <motion.button
+            className="mt-6 bg-teal-500 text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:bg-teal-600 focus:ring-2 focus:ring-teal-400 focus:ring-offset-2 focus:ring-offset-gray-900 transition-colors duration-200"
+            variants={itemVariants}
+            onClick={handleStartClick}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            disabled={isPending}
+            aria-label="Start using Agrovision Virtual Agent"
+          >
+            {isPending ? 'Navigating...' : 'Start'}
+          </motion.button>
+        </motion.div>
 
-          {/* Lottie Animation Section */}
-          <motion.div
-            animate={{ scale: [1, 1.1, 1] }}
-            transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute bottom-20 right-0 w-[700px] h-[600px] z-10"
+        {/* Lottie Animation Section */}
+        <motion.div
+          className="absolute bottom-0 right-0 w-[300px] sm:w-[400px] lg:w-[500px] h-[300px] sm:h-[400px] lg:h-[500px] z-10"
+          animate={{ scale: [1, 1.05, 1] }}
+          transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          <div
+            onMouseMove={handleMouseMove}
+            className="w-full h-full"
+            style={{ perspective: '1000px' }}
           >
             <div
-              onMouseMove={handleMouseMove}
               style={{
-                perspective: "1000px",
-                width: "700px",
-                height: "600px",
-                margin: "0 auto",
+                transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`,
+                transition: 'transform 0.1s',
+                width: '100%',
+                height: '100%',
               }}
             >
-              <div
-                style={{
-                  transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`,
-                  transition: "transform 0.1s",
-                  width: "100%",
-                  height: "100%",
-                }}
-              ></div>
-
-              {/* Lottie fixed bottom-right */}
-              {/* <div className="fixed bottom-[60px] right-[100px] z-10">
-                <DotLottieReact
+              <Suspense fallback={<div>Loading animation...</div>}>
+                <LottieAnimation
                   src="https://lottie.host/d143c7a4-2df8-4d77-8d26-0e9aa38796c5/frlO94qCoX.lottie"
                   loop
                   autoplay
-                  style={{ width: "300px", height: "300px" }}
+                  style={{ width: '100%', height: '100%' }}
                 />
-              </div> */}
+              </Suspense>
             </div>
-          </motion.div>
+          </div>
         </motion.div>
-      )}
+      </motion.div>
     </AnimatePresence>
   );
 };

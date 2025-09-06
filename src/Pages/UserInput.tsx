@@ -11,7 +11,7 @@ import AuthBg from "../assets/images/jetwing-footer.jpg";
 import toast from "react-hot-toast";
 import PDFDocument from "../components/PDFDocument";
 import { PDFDownloadLink } from "@react-pdf/renderer";
-import type { SavePredictionResponse } from "../types/prediction";
+import type { SavePredictionResponse } from "../types/predictionHistory.types";
 import { savePrediction } from "../services/serverPrediction";
 import { useAuthStore } from "../store/useAuthStore";
 const UserInputPage = () => {

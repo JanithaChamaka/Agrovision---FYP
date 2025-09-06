@@ -71,7 +71,7 @@ const AuthPage = () => {
   className="relative flex items-center justify-center min-h-screen bg-center bg-no-repeat"
   style={{
     backgroundImage: `url(${AuthBg})`,
-    backgroundSize: "cover",
+    
   }}
 >
       {/* Overlay for dim effect */}
@@ -97,7 +97,7 @@ const AuthPage = () => {
               setIsLogin(!isLogin);
               setMessage("");
             }}
-            className="px-6 py-2 border border-white rounded-lg hover:bg-white hover:text-blue-600 transition"
+            className="px-6 py-2 border text-white bg-[#254336] rounded-lg hover:bg-green-600 transition"
           >
             {isLogin ? "Sign Up" : "Login"}
           </button>

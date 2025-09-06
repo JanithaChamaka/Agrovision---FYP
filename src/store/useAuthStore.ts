@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
-import type { User } from "../types/Authuser";
+import type { User } from "../types/Authuser.types";
 import { axiosInstance } from "../services/config";
 
 interface useAuthStoreType {
@@ -45,15 +45,15 @@ export const useAuthStore = create<useAuthStoreType>((set) => ({
   }) => {
     try {
       const response = await axiosInstance.post("/auth/signup", userData);
-      toast.success("Account created successfully");
+      toast.success("Account created successfully",{position: "top-center"});
       set({ authUser: response.data });
     } catch (error) {
       if (error instanceof AxiosError) {
         console.error("Error signing up:", error);
-        toast.error(error.response?.data?.message || "Error signing up");
+        toast.error(error.response?.data?.message || "Error signing up",{position: "top-center"});
       } else {
         console.error("Unexpected error:", error);
-        toast.error("An unexpected error occurred");
+        toast.error("An unexpected error occurred", {position: "top-center"});
       }
     }
   },
@@ -65,14 +65,14 @@ export const useAuthStore = create<useAuthStoreType>((set) => ({
         password,
       });
       set({ authUser: response.data });
-      toast.success("Logged in successfully");
+      toast.success("Logged in successfully",{position: "top-center"});
     } catch (error) {
       if (error instanceof AxiosError) {
         console.error("Error logging in:", error);
-        toast.error(error.response?.data?.message || "Error logging in");
+        toast.error(error.response?.data?.message || "Error logging in",{position: "top-center"});
       } else {
         console.error("Unexpected error:", error);
-        toast.error("An unexpected error occurred while logging in");
+        toast.error("An unexpected error occurred while logging in",{position: "top-center"});
       }
     }
   },
@@ -81,14 +81,14 @@ export const useAuthStore = create<useAuthStoreType>((set) => ({
     try {
       await axiosInstance.post("/auth/logout");
       set({ authUser: null });
-      toast.success("Logged out successfully");
+      toast.success("Logged out successfully",{position: "top-center"});
     } catch (error) {
       if (error instanceof AxiosError) {
         console.error("Error logging out:", error);
-        toast.error(error.response?.data?.message || "Error logging out");
+        toast.error(error.response?.data?.message || "Error logging out",{position: "top-center"});
       } else {
         console.error("Unexpected error:", error);
-        toast.error("An unexpected error occurred while logging out");
+        toast.error("An unexpected error occurred while logging out",{position: "top-center"});
       }
     }
   },

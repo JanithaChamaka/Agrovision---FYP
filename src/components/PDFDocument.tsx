@@ -62,6 +62,9 @@ const styles = StyleSheet.create({
 
 interface PDFDocumentProps {
   prediction?: PredictionResult;
+  disease_percentage?: number; // optional
+  top_risks?: Risk[]; // optional
+  notes?: string; // optional
   city: string;
   month: string;
   fertilizer: string; // optional
@@ -69,9 +72,11 @@ interface PDFDocumentProps {
 
 const PDFDocument: React.FC<PDFDocumentProps> = ({
   prediction,
+  disease_percentage,
   city,
   month,
   fertilizer,
+  top_risks
 }) => {
   // Convert actions string or array into bullet array
   const parseActions = (actions: string | string[]) => {
@@ -82,7 +87,7 @@ const PDFDocument: React.FC<PDFDocumentProps> = ({
       .map(a => a.trim())
       .filter(a => a.length > 0);
   };
-console.log("Rendering PDFDocument with:", { prediction, city, month, fertilizer });
+console.log("Rendering PDFDocument with:", { prediction,disease_percentage, month, fertilizer });
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -95,34 +100,37 @@ console.log("Rendering PDFDocument with:", { prediction, city, month, fertilizer
           <Text style={styles.text}>Month: {month}</Text>
           <Text style={styles.text}>Fertilizer Usage: {fertilizer} kg</Text>
           <Text style={[styles.text, { fontWeight: "bold" }]}>
-            Predicted Disease Risk: {prediction?.disease_percentage ?? "N/A"}% 
+            Predicted Disease Risk: {prediction?.disease_percentage ?? disease_percentage ?? "N/A"}%
           </Text>
         </View>
 
         {/* Top Risks */}
-        <View style={styles.section}>
-          <Text style={styles.header}>Top Risks:</Text>
-          {prediction?.top_risks?.map((risk: Risk, idx: number) => (
-            <View key={idx} style={styles.riskContainer}>
-              <Text style={{ fontWeight: "bold", color: "#1b4332" }}>
-                {idx + 1}. {risk.name} (Risk Score: {risk.risk_score})
-              </Text>
+      {/* Top Risks */}
+<View style={styles.section}>
+  <Text style={styles.header}>Top Risks:</Text>
 
-              {/* Why */}
-              <Text style={styles.header}>Why:</Text>
-              <Text style={styles.text}>{risk.why}</Text>
+  {(prediction?.top_risks ?? top_risks)?.map((risk: Risk, idx: number) => (
+    <View key={idx} style={styles.riskContainer}>
+      <Text style={{ fontWeight: "bold", color: "#1b4332" }}>
+        {idx + 1}. {risk.name} (Risk Score: {risk.risk_score})
+      </Text>
 
-              {/* Actions */}
-              <Text style={styles.header}>Actions:</Text>
-              {parseActions(risk.actions).map((action, i) => (
-                <View key={i} style={styles.bullet}>
-                  <Text>•</Text>
-                  <Text style={styles.bulletText}>{action}</Text>
-                </View>
-              ))}
-            </View>
-          ))}
+      {/* Why */}
+      <Text style={styles.header}>Why:</Text>
+      <Text style={styles.text}>{risk.why}</Text>
+
+      {/* Actions */}
+      <Text style={styles.header}>Actions:</Text>
+      {parseActions(risk.actions).map((action, i) => (
+        <View key={i} style={styles.bullet}>
+          <Text>•</Text>
+          <Text style={styles.bulletText}>{action}</Text>
         </View>
+      ))}
+    </View>
+  ))}
+</View>
+
       </Page>
     </Document>
   );

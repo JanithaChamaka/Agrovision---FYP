@@ -3,28 +3,28 @@ import { motion } from 'framer-motion';
 import bgimage from '../assets/images/kandy.jpg';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import howItWorksBg from '../assets/images/footer.png';
 
 const howItWorksData = [
-  { 
-    id: 1, 
-    title: "AI Predictions", 
-    content: "Agrovision leverages AI models to analyze local weather, soil, and fertilizer usage. Get accurate disease risk predictions to protect crops and maximize yield." 
+  {
+    id: 1,
+    title: "AI Predictions",
+    content: "Agrovision leverages AI models to analyze local weather, soil, and fertilizer usage. Get accurate disease risk predictions to protect crops and maximize yield."
   },
-  { 
-    id: 2, 
-    title: "AVA Chat Bot", 
-    content: "Ask AVA, your AI assistant, for instant guidance on crop management, fertilizer use, and preventive measures anytime." 
+  {
+    id: 2,
+    title: "AVA Chat Bot",
+    content: "Ask AVA, your AI assistant, for instant guidance on crop management, fertilizer use, and preventive measures anytime."
   },
-  { 
-    id: 3, 
-    title: "Download Prediction Report", 
-    content: "Generate a detailed PDF report with disease predictions, top risks, and recommended actions. Keep it for records or share with your team." 
+  {
+    id: 3,
+    title: "Download Prediction Report",
+    content: "Generate a detailed PDF report with disease predictions, top risks, and recommended actions. Keep it for records or share with your team."
   },
-  { 
-    id: 4, 
-    title: "Email Results", 
-    content: "Receive AI prediction results directly in your inbox for easy sharing with agronomists, farm managers, or colleagues." 
+  {
+    id: 4,
+    title: "Email Results",
+    content: "Receive AI prediction results directly in your inbox for easy sharing with agronomists, farm managers, or colleagues."
   }
 ];
 
@@ -108,28 +108,42 @@ const InfoSection = () => {
           <p className="text-xl md:text-2xl max-w-3xl mx-auto">
             Empowering Sri Lankan paddy farmers with AI-driven disease prediction, real-time alerts, and actionable insights to protect crops and maximize harvests.
           </p>
+          
         </motion.div>
       </div>
+      <div
+        className="relative bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${howItWorksBg})` }}
+      >
+        {/* Optional overlay for better text readability */}
+        <div className="absolute inset-0 bg-black/30"></div>
 
-      {/* How It Works Section */}
-      <section className="relative py-24 bg-gray-100 overflow-hidden">
-        <h2 className="text-4xl font-bold text-center mb-16">Key Features</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-8">
-          {howItWorksData.map(item => (
-            <FlipCard key={item.id} title={item.title} content={item.content} />
-          ))}
-        </div>
-      </section>
+        <div className="relative z-10">
+          {/* How It Works Section */}
+          <section className="py-24 overflow-hidden">
+            <h2 className="text-4xl font-bold text-center mb-16 text-white drop-shadow-lg">
+              Key Features
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-8">
+              {howItWorksData.map(item => (
+                <FlipCard key={item.id} title={item.title} content={item.content} />
+              ))}
+            </div>
+          </section>
 
-      {/* Benefits Section */}
-      <section className="relative py-24 bg-white overflow-hidden">
-        <h2 className="text-4xl font-bold text-center mb-16 text-green-900">Benefits</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-8">
-          {benefitsData.map(item => (
-            <FlipCard key={item.id} title={item.title} content={item.content} />
-          ))}
+          {/* Benefits Section */}
+          <section className="py-24 overflow-hidden">
+            <h2 className="text-4xl font-bold text-center mb-16 text-white drop-shadow-lg">
+              Benefits
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-8">
+              {benefitsData.map(item => (
+                <FlipCard key={item.id} title={item.title} content={item.content} />
+              ))}
+            </div>
+          </section>
         </div>
-      </section>
+      </div>
 
       {/* Call to Action */}
       <section className="relative py-24 bg-green-800 text-white text-center px-8">
@@ -137,7 +151,7 @@ const InfoSection = () => {
         <p className="max-w-3xl mx-auto mb-8">
           Protect your crops, secure your harvest, and grow with confidence using AI-powered insights and actionable recommendations.
         </p>
-        <button className="px-8 py-4 bg-yellow-400 rounded-xl font-bold text-green-900 hover:bg-yellow-500 transition"   onClick={handleGetStarted}>
+        <button className="px-8 py-4 bg-yellow-400 rounded-xl font-bold text-green-900 hover:bg-yellow-500 transition" onClick={handleGetStarted}>
           Get Started
         </button>
       </section>

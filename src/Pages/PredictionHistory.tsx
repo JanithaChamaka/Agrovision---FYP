@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuthStore } from "../store/useAuthStore";
-import type { PredictionHistory } from "../types/prediction";
+import type { PredictionHistory } from "../types/predictionHistory.types";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import PDFDocument from "../components/PDFDocument";
 import { motion } from "framer-motion";
@@ -27,6 +27,7 @@ const PredictionHistoryPage = () => {
           `http://localhost:5000/api/predictions/${authUser._id}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
+        console.log("API Response:", res.data);
         setHistory(res.data);
       } catch (err) {
         console.error("Error fetching prediction history:", err);
@@ -46,7 +47,7 @@ const PredictionHistoryPage = () => {
           city: prediction.city,
           month: prediction.month,
           fertilizer: prediction.fertilizer,
-          disease_percentage: prediction.predictions?.disease_percentage,
+          disease_percentage: prediction.diseasePercentage,
           risks: prediction.actions
             .map((r) => `${r.name} - ${r.risk_score}`)
             .join(", "),
@@ -159,7 +160,7 @@ const PredictionHistoryPage = () => {
             <p className="mb-2">
               <strong>Disease Risk:</strong>{" "}
               <span className="text-rose-600 font-bold">
-                {selectedPrediction.predictions?.disease_percentage ?? "N/A"}%
+                {selectedPrediction.diseasePercentage}%
               </span>
             </p>
 
@@ -180,10 +181,11 @@ const PredictionHistoryPage = () => {
               <PDFDownloadLink
                 document={
                   <PDFDocument
-                    prediction={selectedPrediction.predictions}
+                    disease_percentage={selectedPrediction.diseasePercentage}
                     city={selectedPrediction.city}
                     month={selectedPrediction.month}
                     fertilizer={String(selectedPrediction.fertilizer)}
+                     top_risks={selectedPrediction.actions} 
                   />
                 }
                 fileName={`prediction-${selectedPrediction.city}-${selectedPrediction.month}.pdf`}
