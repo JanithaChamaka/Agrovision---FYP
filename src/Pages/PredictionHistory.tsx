@@ -1,4 +1,3 @@
-// pages/PredictionHistoryPage.tsx
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuthStore } from "../store/useAuthStore";
@@ -7,14 +6,17 @@ import { PDFDownloadLink } from "@react-pdf/renderer";
 import PDFDocument from "../components/PDFDocument";
 import { motion } from "framer-motion";
 import emailjs from "emailjs-com";
-import type { PredictionResult } from "../types/PredictionResult.types";
 
 const PredictionHistoryPage = () => {
   const { authUser } = useAuthStore();
   const [history, setHistory] = useState<PredictionHistory[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedPrediction, setSelectedPrediction] = useState<PredictionHistory | null>(null);
-console.log(selectedPrediction?.predictions);
+
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 12;
+
   useEffect(() => {
     const fetchHistory = async () => {
       if (!authUser) return;
@@ -44,7 +46,7 @@ console.log(selectedPrediction?.predictions);
           city: prediction.city,
           month: prediction.month,
           fertilizer: prediction.fertilizer,
-          disease_percentage: prediction.predictions,
+          disease_percentage: prediction.predictions?.disease_percentage,
           risks: prediction.actions
             .map((r) => `${r.name} - ${r.risk_score}`)
             .join(", "),
@@ -57,60 +59,95 @@ console.log(selectedPrediction?.predictions);
       alert("Failed to send email.");
     }
   };
-console.log("History:", selectedPrediction);
+
+  // Pagination logic
+  const totalPages = Math.ceil(history.length / itemsPerPage);
+  const paginatedData = history.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
   return (
-    <div className="min-h-screen p-8 bg-gray-100">
+    <div className="min-h-[calc(100vh-60px)] mt-16 px-6 bg-gray-100 flex flex-col">
+      {/* Page Title */}
       <h1 className="text-3xl font-bold mb-6 text-center">Prediction History</h1>
 
-      {loading ? (
-        <p className="text-center">Loading...</p>
-      ) : history.length === 0 ? (
-        <p className="text-center text-gray-600">No predictions found.</p>
-      ) : (
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white rounded-lg shadow-md">
-            <thead>
-              <tr className="bg-green-200 text-left">
-                <th className="py-3 px-6">Created Date</th>
-                <th className="py-3 px-6">Description (Month)</th>
-                <th className="py-3 px-6">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {history.map((item, idx) => (
-                <tr key={idx} className="border-b hover:bg-green-50">
-                  <td className="py-3 px-6">{new Date(item.createdAt).toLocaleDateString()}</td>
-                  <td className="py-3 px-6">Paddy - {item.city} ({item.month})</td>
-                  <td className="py-3 px-6">
-                    <button
-                      onClick={() => setSelectedPrediction(item)}
-                      className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700"
-                    >
-                      View
-                    </button>
-                  </td>
+      {/* Table Section */}
+      <div className="flex-1 overflow-y-auto rounded-xl shadow-lg bg-white">
+        {loading ? (
+          <p className="text-center p-4">Loading...</p>
+        ) : history.length === 0 ? (
+          <p className="text-center text-gray-600 p-4">No predictions found.</p>
+        ) : (
+          <>
+            <table className="min-w-full rounded-lg overflow-hidden">
+              <thead>
+                <tr className="bg-green-200 text-left">
+                  <th className="py-3 px-20">Created Date</th>
+                  <th className="py-3 px-10">Description (Month)</th>
+                  <th className="py-3 px-6">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+              </thead>
+              <tbody>
+                {paginatedData.map((item, idx) => (
+                  <tr key={idx} className="border-b hover:bg-green-50">
+                    <td className="py-3 px-20">
+                      {new Date(item.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="py-3 px-6">
+                      Paddy - {item.city} ({item.month})
+                    </td>
+                    <td className="py-3 px-6">
+                      <button
+                        onClick={() => setSelectedPrediction(item)}
+                        className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700"
+                      >
+                        View
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
 
-      {/* Modal for prediction details */}
+            {/* Pagination */}
+            <div className="flex justify-center items-center gap-4 py-4 border-t">
+              <button
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((p) => p - 1)}
+                className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+              >
+                Prev
+              </button>
+              <span className="text-gray-700">
+                Page {currentPage} of {totalPages}
+              </span>
+              <button
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage((p) => p + 1)}
+                className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+              >
+                Next
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* Modal */}
       {selectedPrediction && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm bg-opacity-50 flex justify-center items-center z-50 overflow-auto">
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.3 }}
-            className="bg-white w-full max-w-3xl p-6 rounded-xl shadow-xl relative"
+            className="bg-white w-[80%] max-w-5xl p-6 rounded-xl shadow-xl relative"
           >
-            {/* Close Button */}
             <button
               onClick={() => setSelectedPrediction(null)}
               className="absolute top-4 right-4 text-gray-700 hover:text-gray-900 font-bold"
             >
-              X
+              ✕
             </button>
 
             <h2 className="text-2xl font-bold mb-4">
@@ -121,14 +158,16 @@ console.log("History:", selectedPrediction);
             </p>
             <p className="mb-2">
               <strong>Disease Risk:</strong>{" "}
-              {<span className="text-rose-600 font-bold"> {selectedPrediction.fertilizer}%</span>}
+              <span className="text-rose-600 font-bold">
+                {selectedPrediction.predictions?.disease_percentage ?? "N/A"}%
+              </span>
             </p>
 
-            <div className="mt-4">
+            <div className="mt-4 h-[60%] max-h-5xl overflow-y-auto pr-2">
               <h3 className="font-semibold mb-2">Top Risks:</h3>
               <ul className="list-disc list-inside text-gray-700">
                 {selectedPrediction.actions.map((risk, i) => (
-                  <li key={i}>
+                  <li key={i} className="mb-2">
                     <strong>{risk.name}</strong> - Score: {risk.risk_score} - Why: {risk.why}
                     <br />
                     Actions: {risk.actions.join(", ")}
@@ -137,10 +176,8 @@ console.log("History:", selectedPrediction);
               </ul>
             </div>
 
-            {/* Buttons */}
-            if(selectedPrediction && prediction) {
-  <div className="flex gap-4 mt-6">
-               <PDFDownloadLink
+            <div className="flex gap-4 mt-6">
+              <PDFDownloadLink
                 document={
                   <PDFDocument
                     prediction={selectedPrediction.predictions}
@@ -152,21 +189,19 @@ console.log("History:", selectedPrediction);
                 fileName={`prediction-${selectedPrediction.city}-${selectedPrediction.month}.pdf`}
               >
                 {({ loading }) => (
-                  <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                  <button className="px-4 py-2 bg-[#254336] rounded-lg hover:bg-green-600 text-white">
                     {loading ? "Generating..." : "Download PDF"}
                   </button>
                 )}
-              </PDFDownloadLink> 
+              </PDFDownloadLink>
 
               <button
                 onClick={() => sendEmail(selectedPrediction)}
-                className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                className="px-4 py-2 bg-[#254336] rounded-lg hover:bg-green-600 text-white"
               >
                 Send Email
               </button>
             </div>
-            }
-           
           </motion.div>
         </div>
       )}

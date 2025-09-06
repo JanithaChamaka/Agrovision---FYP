@@ -76,45 +76,31 @@ const { authUser } = useAuthStore();
     setActiveChatId(newId);
   };
 
-  const sendMessage = async () => {
-    const trimmed = input.trim();
-    if (!trimmed) return;
+const sendMessage = async () => {
+  if (!input.trim()) return;
 
-    // Add user message
-    setMessages((prev) => [...prev, { sender: "user", text: trimmed }]);
-    setInput("");
+  const messageToSend = input.trim();
+  setMessages((prev) => [...prev, { sender: "user", text: messageToSend }]);
+  setInput("");
 
-    try {
-      const res = await fetch("http://localhost:5000/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ text: trimmed, senderType: "user" }),
-      });
+  try {
+    const res = await fetch("http://localhost:5000/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ text: messageToSend, senderType: "user" }),
+    });
 
-      const data = await res.json();
-      const botReply = data.botReply || "Sorry, I couldn't respond.";
+    const data = await res.json();
 
-      // Add bot reply
-      setMessages((prev) => [...prev, { sender: "bot", text: botReply }]);
+    if (data.conversationId) setActiveChatId(data.conversationId);
+    setMessages((prev) => [...prev, { sender: "bot", text: data.botReply }]);
+  } catch (err) {
+    console.error(err);
+    setMessages((prev) => [...prev, { sender: "bot", text: "Error sending message." }]);
+  }
+};
 
-      // Update chat history
-      if (data.conversationId) setActiveChatId(data.conversationId);
-      setChatHistory((prev) =>
-        prev.map((chat) =>
-          chat.id === activeChatId
-            ? { ...chat, messages: [...messages, { sender: "user", text: trimmed }, { sender: "bot", text: botReply }] }
-            : chat
-        )
-      );
-    } catch (err) {
-      console.error("Error sending message:", err);
-      setMessages((prev) => [
-        ...prev,
-        { sender: "bot", text: "Oops! Something went wrong." },
-      ]);
-    }
-  };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") sendMessage();

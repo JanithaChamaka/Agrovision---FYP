@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
 });
 
 interface PDFDocumentProps {
-  prediction: PredictionResult;
+  prediction?: PredictionResult;
   city: string;
   month: string;
   fertilizer: string; // optional
@@ -95,14 +95,14 @@ console.log("Rendering PDFDocument with:", { prediction, city, month, fertilizer
           <Text style={styles.text}>Month: {month}</Text>
           <Text style={styles.text}>Fertilizer Usage: {fertilizer} kg</Text>
           <Text style={[styles.text, { fontWeight: "bold" }]}>
-            Predicted Disease Risk: {prediction.disease_percentage}% 
+            Predicted Disease Risk: {prediction?.disease_percentage ?? "N/A"}% 
           </Text>
         </View>
 
         {/* Top Risks */}
         <View style={styles.section}>
           <Text style={styles.header}>Top Risks:</Text>
-          {prediction.top_risks.map((risk: Risk, idx: number) => (
+          {prediction?.top_risks?.map((risk: Risk, idx: number) => (
             <View key={idx} style={styles.riskContainer}>
               <Text style={{ fontWeight: "bold", color: "#1b4332" }}>
                 {idx + 1}. {risk.name} (Risk Score: {risk.risk_score})
