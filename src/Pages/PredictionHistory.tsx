@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuthStore } from "../store/useAuthStore";
-import type { PredictionHistory } from "../types/predictionHistory.types";
+import type { PredictionHistory } from "../types/PredictionHistory.types";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import PDFDocument from "../components/PDFDocument";
 import { motion } from "framer-motion";

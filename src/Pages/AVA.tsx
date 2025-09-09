@@ -2,7 +2,7 @@ import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useTransition, lazy, Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import type { Variants } from 'framer-motion';
 // Lazy load the Lottie animation
 const LottieAnimation = lazy(() =>
   import('@lottiefiles/dotlottie-react').then((module) => ({
@@ -28,12 +28,15 @@ const containerVariants = {
   },
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
   show: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: 'easeOut' },
+    transition: {
+      duration: 0.6,
+      ease: ['easeOut'], // wrap in array to satisfy TS
+    },
   },
 };
 
@@ -87,18 +90,25 @@ const Ava: React.FC = () => {
             agribusinesses with real-time support, crop insights, weather tracking,
             and seamless integration with AgroVision’s tools.
           </motion.p>
-
-          <motion.button
-            className="mt-6 bg-teal-500 text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:bg-teal-600 focus:ring-2 focus:ring-teal-400 focus:ring-offset-2 focus:ring-offset-gray-900 transition-colors duration-200"
-            variants={itemVariants}
+     <motion.button
+            className="
+              mt-8
+              text-[30px]
+              bg-[#254336]
+              py-2.5 px-2.5
+              rounded-xl  
+              cursor-pointer
+              w-[100px]
+              h-[70px]
+              sm:w-[200px] sm:h-[50px] sm:text-[20px]
+              xs:w-[160px] xs:h-[50px] xs:text-[18px]
+              text-white
+            "
             onClick={handleStartClick}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            disabled={isPending}
-            aria-label="Start using Agrovision Virtual Agent"
           >
-            {isPending ? 'Navigating...' : 'Start'}
+            Start
           </motion.button>
+   
         </motion.div>
 
         {/* Lottie Animation Section */}

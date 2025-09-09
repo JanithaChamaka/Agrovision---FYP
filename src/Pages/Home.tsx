@@ -4,20 +4,29 @@ import { useNavigate } from "react-router-dom";
 import '../index.css'
 import { useEffect, useState } from 'react';
 import logo from "../assets/images/logo.png";
+import type { Variants } from "framer-motion";
 
 function Home() {
-  const containerVariants = {
-    hidden: {},
-    show: {
-      transition: {
-        staggerChildren: 0.3,
-      },
+  const containerVariants: Variants = {
+  hidden: {},
+  show: {
+    transition: {
+      staggerChildren: 0.3,
     },
-  };
-  const itemVariants = {
-    hidden: { opacity: 0, y: 40 },
-    show: { opacity: 1, y: 0, transition: { duration: 1, ease: "easeOut" } },
-  };
+  },
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 40 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 1,
+      ease: ["easeOut"], // wrap in array to satisfy TypeScript
+    },
+  },
+};
 
   const navigate = useNavigate();
   const controls = useAnimation();
@@ -80,7 +89,7 @@ function Home() {
           transition={{ delay: 1 }}
         >
           <motion.h1 className="text-[80px] mb-5 header-text" variants={itemVariants}>
-            Agrovision
+            AGROVISION
           </motion.h1>
           <motion.p className="text-3xl mb-5" variants={itemVariants}>
             Welcome to Agrovision – Harnessing AI to Predict, Protect, and Prosper in Farming!
@@ -101,6 +110,7 @@ function Home() {
               h-[70px]
               sm:w-[200px] sm:h-[50px] sm:text-[20px]
               xs:w-[160px] xs:h-[50px] xs:text-[18px]
+              text-white
             "
             onClick={handleStartClick}
             disabled={loading}

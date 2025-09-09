@@ -12,7 +12,7 @@ import toast from "react-hot-toast";
 import PDFDocument from "../components/PDFDocument";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import type { SavePredictionResponse } from "../types/predictionHistory.types";
-import { savePrediction } from "../services/serverPrediction";
+import { savePrediction } from "../services/serverprediction";
 import { useAuthStore } from "../store/useAuthStore";
 const UserInputPage = () => {
   const [view, setView] = useState<"idle" | "rainfall" | "prediction">("idle");

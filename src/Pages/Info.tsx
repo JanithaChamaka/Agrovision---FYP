@@ -4,7 +4,7 @@ import bgimage from '../assets/images/kandy.jpg';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import howItWorksBg from '../assets/images/footer.png';
-
+import Carousel from '../components/Carousel';
 const howItWorksData = [
   {
     id: 1,
@@ -108,40 +108,29 @@ const InfoSection = () => {
           <p className="text-xl md:text-2xl max-w-3xl mx-auto">
             Empowering Sri Lankan paddy farmers with AI-driven disease prediction, real-time alerts, and actionable insights to protect crops and maximize harvests.
           </p>
-          
+
         </motion.div>
       </div>
       <div
         className="relative bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${howItWorksBg})` }}
+        // style={{ backgroundImage: `url(${howItWorksBg})` }}
       >
         {/* Optional overlay for better text readability */}
         <div className="absolute inset-0 bg-black/30"></div>
 
         <div className="relative z-10">
           {/* How It Works Section */}
-          <section className="py-24 overflow-hidden">
-            <h2 className="text-4xl font-bold text-center mb-16 text-white drop-shadow-lg">
-              Key Features
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-8">
-              {howItWorksData.map(item => (
-                <FlipCard key={item.id} title={item.title} content={item.content} />
-              ))}
-            </div>
-          </section>
+          {/* <section className="py-24 overflow-hidden"> */}
+      <Carousel
+        // baseWidth={ }          // or remove this prop if your Carousel supports full width
+        autoplay={true}
+        autoplayDelay={3000}
+        pauseOnHover={true}
+        loop={true}
+        round={false}
+      />
+          {/* </section> */}
 
-          {/* Benefits Section */}
-          <section className="py-24 overflow-hidden">
-            <h2 className="text-4xl font-bold text-center mb-16 text-white drop-shadow-lg">
-              Benefits
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-8">
-              {benefitsData.map(item => (
-                <FlipCard key={item.id} title={item.title} content={item.content} />
-              ))}
-            </div>
-          </section>
         </div>
       </div>
 

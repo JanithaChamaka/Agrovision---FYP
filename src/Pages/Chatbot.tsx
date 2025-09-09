@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Bot, Plus, Copy, Edit, MoreHorizontal } from "lucide-react";
 import { useAuthStore } from "../store/useAuthStore";
-
+import Logo from '../assets/images/Logo.png';
 interface Message {
   sender: "user" | "bot";
   text: string;
@@ -143,13 +143,15 @@ const Chatbot = () => {
       {/* Sidebar */}
       <div className="w-80 bg-white border-r border-gray-200 flex flex-col">
         <div className="p-6 border-b border-gray-200">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center" />
-            <span className="font-semibold text-gray-900">AVA</span>
+          <div className="flex items-center  mb-4">
+
+       {/* <img src={Logo} alt="Logo" className="w-15 h-15 object-contain" /> */}
+
+            <span className="font-semibold align-middle text-gray-900">AVA</span>
           </div>
           <button
             onClick={newChat}
-            className="w-full bg-gray-900 text-white py-2.5 px-4 rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center gap-2 font-medium"
+            className="w-full bg-[#B4E380] text-black py-2.5 px-4 rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center gap-2 font-medium"
           >
             <Plus size={18} />
             New Chat
@@ -191,7 +193,7 @@ const Chatbot = () => {
       <div className="flex-1 flex flex-col p-6">
         <div className="flex-1 flex flex-col bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
           {/* Chat Header */}
-          <div className="bg-white border-b border-gray-200 p-4 rounded-t-2xl">
+          <div className="bg-[#B4E380] border-b border-gray-200 p-4 rounded-t-2xl">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold text-gray-900">AVA Chat</h2>
               <div className="flex items-center gap-2">
@@ -253,7 +255,7 @@ const Chatbot = () => {
               <button
                 onClick={sendMessage}
                 disabled={!input.trim()}
-                className="bg-gray-900 text-white p-3 rounded-xl hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-[#254336] text-white p-3 rounded-xl hover:bg-gray-800 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 Send
               </button>
