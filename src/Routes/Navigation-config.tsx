@@ -1,10 +1,10 @@
-import Auth from "../Pages/Auth";
-import Ava from "../Pages/AVA";
-import Chatbot from "../Pages/Chatbot";
-import Home from "../Pages/Home";
-import InfoSection from "../Pages/Info";
-import PredictionHistoryPage from "../Pages/PredictionHistory";
-import UserInputPage from "../Pages/UserInput";
+import Auth from "../pages/Auth";
+import Ava from "../pages/AVA";
+import Chatbot from "../pages/Chatbot";
+import Home from "../pages/Home";
+import InfoSection from "../pages/Info";
+import PredictionHistoryPage from "../pages/PredictionHistory";
+import UserInputPage from "../pages/UserInput";
 
 export const NavigationConfig = [
   {

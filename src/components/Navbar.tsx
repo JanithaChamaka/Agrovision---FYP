@@ -85,7 +85,7 @@ const Navbar = () => {
               )
           )}
    {/* Language Dropdown */}
-          <li ref={langRef} className="relative cursor-pointer text-white">
+          {/* <li ref={langRef} className="relative cursor-pointer text-white">
             <div
               className="flex items-center gap-1 select-none"
               onClick={() => setDropdownOpen((prev) => !prev)}
@@ -120,7 +120,7 @@ const Navbar = () => {
                 ))}
               </ul>
             )}
-          </li>
+          </li> */}
           {authUser && (
             <li
               ref={userMenuRef}

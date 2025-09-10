@@ -68,7 +68,7 @@ const AuthPage = () => {
 
   return (
     <div
-  className="relative flex items-center justify-center min-h-screen bg-center bg-no-repeat"
+  className="relative flex items-center justify-center h-screen bg-center bg-no-repeat"
   style={{
     backgroundImage: `url(${AuthBg})`,
     

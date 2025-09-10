@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import "./App.css";
 import Navbar from "./components/Navbar";
-import Router from "./Routes/Router";
+import Router from "./routes/Router";
 import { useAuthStore } from "./store/useAuthStore";
 import { Loader } from "lucide-react";
 import { Toaster } from "react-hot-toast";

@@ -11,7 +11,7 @@ import AuthBg from "../assets/images/jetwing-footer.jpg";
 import toast from "react-hot-toast";
 import PDFDocument from "../components/PDFDocument";
 import { PDFDownloadLink } from "@react-pdf/renderer";
-import type { SavePredictionResponse } from "../types/predictionHistory.types";
+import type { SavePredictionResponse } from "../types/PredictionHistory.types";
 import { savePrediction } from "../services/serverprediction";
 import { useAuthStore } from "../store/useAuthStore";
 const UserInputPage = () => {
@@ -312,6 +312,16 @@ const UserInputPage = () => {
           </motion.div>
 
           {/* Top Risks Cards */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="text-center"
+          >
+            <h3 className="text-2xl font-semibold text-[#254336]-800 mb-6">
+              Top Risks
+            </h3>
+          </motion.div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {prediction.top_risks.map((risk: Risk, i: number) => (
               <motion.div

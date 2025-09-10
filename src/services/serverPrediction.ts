@@ -1,6 +1,6 @@
 import axios from "axios";
 import type { PredictionResult } from "../types/PredictionResult.types";
-import type { SavePredictionResponse } from "../types/predictionHistory.types";
+import type { SavePredictionResponse } from "../types/PredictionHistory.types";
 
 export const savePrediction = async (
  userid: string,
